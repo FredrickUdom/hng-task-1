@@ -1,21 +1,49 @@
 import { Injectable, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
+import * as requestIp from 'request-ip';
+import * as geoip from 'geoip-lite';
+import { AppError } from './util/app.err';
+import { WeatherService } from './weather.service';
+
 
 @Injectable()
 export class AppService {
-  getHello(@Query("visitor_name") visitorName: string, @Req() request: Request) {
-    let client_ip =  request.ip || '127.0.0.1';
-    if (client_ip.startsWith('::ffff:')) {
-      client_ip = client_ip.split(':').pop();
+  
+    constructor(private readonly weatherService: WeatherService) {}
+  
+    getUserIp(req): string {
+      let ipAddress = requestIp.getClientIp(req);
+  
+      if (ipAddress && ipAddress.includes('::ffff:')) {
+        ipAddress = ipAddress.replace('::ffff:', '');
+      }
+  
+      console.log('ipAddress', ipAddress);
+  
+      return ipAddress ?? '104.28.220.44';
     }
-    const location = 'New York';
-    const temperature = 11;
-    const greeting = `Hello, ${visitorName || 'Mark'}!, the temperature is ${temperature} degrees Celsius in ${location}`;
-
-    return{
-       client_ip,
-       location,
-       greeting,
+  
+    async getGeoLocation(ip: string) {
+      const geo = geoip.lookup(ip);
+      console.log('geo', geo);
+  
+      if (!geo) {
+        throw new AppError('Could not determine location from IP address', 400);
+      }
+  
+      const { city, region, country } = geo;
+      console.log(geo.city);
+      
+  
+      return {
+        city,
+        region,
+        country,
+      };
+    }
+  
+    async getTemperatureInCelsius(city: string): Promise<number> {
+      return this.weatherService.getTemperatureInCelsius(city);
     }
   }
-}
+
