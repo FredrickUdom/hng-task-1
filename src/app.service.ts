@@ -16,7 +16,6 @@ export class AppService {
   
     getUserIp(req): any {
       let ipAddress = requestIp.getClientIp(req);
-   
     
       if (ipAddress && ipAddress.includes('::ffff:')) {
         ipAddress = ipAddress.replace('::ffff:', '');

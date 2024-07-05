@@ -7,6 +7,7 @@ import axios from 'axios';
 
 
 
+
 @Controller('api')
 export class AppController {
   
@@ -35,7 +36,7 @@ export class AppController {
       client_ip: ip, // The IP address of the requester
       // location: requesterCity, // The city of the requester
       location: requesterCity,
-      greeting: `Hello, ${visitorName ?? 'Mark'}!, the temperature is ${temperature} degrees Celsius in ${requesterCity}`,
+      greeting: `Hello, ${visitorName ?? 'User'}!, the temperature is ${temperature} degrees Celsius in ${requesterCity}`,
     };
 
     return data
