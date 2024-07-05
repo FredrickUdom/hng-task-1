@@ -5,6 +5,7 @@ import { HttpModule } from '@nestjs/axios';
 import { ConfigModule,  } from '@nestjs/config';
 import { HttpExceptionFilter } from './util/httpExceptionFilter';
 import { WeatherService } from './weather.service';
+
 @Module({
   imports: [HttpModule, ConfigModule.forRoot({isGlobal: true})
 

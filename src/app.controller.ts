@@ -3,6 +3,10 @@ import { AppService } from './app.service';
 import { Request } from 'express';
 import { AppError } from './util/app.err';
 
+import axios from 'axios';
+
+
+
 @Controller('api')
 export class AppController {
   
@@ -10,8 +14,9 @@ export class AppController {
 
   @Get('hello')
  
-  async getHello(@Query('visitor_name') visitorName: string, @Req() req: Request) {
+  async getHello(@Query('visitor_name') visitorName: any, @Req() req: Request) {
     const ip = this.appService.getUserIp(req.ip);
+
     const { city } = await this.appService.getGeoLocation(ip);
     const temperature = await this.appService.getTemperatureInCelsius(city);
 
@@ -28,10 +33,19 @@ export class AppController {
 
     const data = {
       client_ip: ip, // The IP address of the requester
-      location: requesterCity, // The city of the requester
-      greeting: `Hello, ${visitorName ?? 'Visitor'}!, the temperature is ${temperature} degrees Celsius in ${requesterCity}`,
+      // location: requesterCity, // The city of the requester
+      location: requesterCity,
+      greeting: `Hello, ${visitorName ?? 'Mark'}!, the temperature is ${temperature} degrees Celsius in ${requesterCity}`,
     };
 
     return data
   }
+
+ 
 }
+
+
+
+ 
+
+
